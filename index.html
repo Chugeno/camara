@@ -25,9 +25,22 @@
             height: 100%;
             object-fit: cover;
         }
+        #warning {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 18px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
+    <!-- Advertencia para VoiceOver -->
+    <div id="warning" role="alert" aria-live="assertive">
+        Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio.
+    </div>
+
     <video id="video" autoplay playsinline></video>
     <script>
         async function startCamera() {
@@ -46,7 +59,17 @@
             }
         }
 
-        window.addEventListener('load', startCamera);
+        // Función para ocultar la advertencia después de cierto tiempo
+        function hideWarning() {
+            const warning = document.getElementById('warning');
+            warning.style.display = 'none';
+        }
+
+        // Iniciar la cámara y ocultar la advertencia después de 5 segundos (5000 milisegundos)
+        window.addEventListener('load', function() {
+            startCamera();
+            setTimeout(hideWarning, 1000);
+        });
     </script>
 </body>
 </html>
