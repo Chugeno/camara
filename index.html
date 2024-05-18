@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cámara en Pantalla Completa</title>
     <style>
         body, html {
@@ -29,7 +29,7 @@
         async function startCamera() {
             const constraints = {
                 video: {
-                    facingMode: 'environment' // Usa 'user' si prefieres la cámara frontal
+                    facingMode: 'environment' // Usa 'user' para la cámara frontal
                 }
             };
             try {
@@ -38,6 +38,7 @@
                 video.srcObject = stream;
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
+                alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
             }
         }
 
