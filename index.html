@@ -39,7 +39,7 @@
 <body>
     <!-- Advertencia para VoiceOver -->
     <div id="warning" role="alert" aria-live="assertive">
-        PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
+        PEDRO, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
     </div>
 
     <video id="video" autoplay playsinline></video>
@@ -81,14 +81,7 @@
                 setTimeout(function() {
                     warningElement.style.display = 'none'; // Ocultar la alerta después de 5000 milisegundos
                     window.focus(); // Volver a enfocar la ventana para ocultar la alerta
-                }, 5000);
-
-                // Para que VoiceOver lea el mensaje y se oculte después de 5000 milisegundos
-                // const warningText = "PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.";
-                // alert(warningText);
-                // setTimeout(function() {
-//                    window.focus(); // Volver a enfocar la ventana para ocultar la alerta
-  //              }, 5000);
+                }, 1000);
     
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
