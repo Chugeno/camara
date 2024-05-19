@@ -19,6 +19,7 @@
             justify-content: center;
             align-items: center;
             background-color: black;
+            position: relative; /* Necesario para alinear el botón al centro */
         }
         video {
             width: 100%;
@@ -36,17 +37,16 @@
         }
         #controlButton {
             position: absolute;
-            bottom: 20px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background-color: rgba(0, 0, 0, 0.5);
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0);
             color: white;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 20px;
             z-index: 1000;
-            display: none; /* Ocultar inicialmente */
         }
     </style>
 </head>
@@ -61,7 +61,6 @@
     <script>
         let videoStream;
         let isCameraRunning = true; // Variable para rastrear si la cámara está en funcionamiento
-        let controlButtonTimeout;
 
         async function startCamera() {
             const constraints = {
@@ -115,22 +114,6 @@
             const controlButton = document.getElementById('controlButton');
             controlButton.textContent = isCameraRunning ? 'Pausar' : 'Reproducir';
         }
-
-        function showControlButton() {
-            const controlButton = document.getElementById('controlButton');
-            controlButton.style.display = 'block';
-
-            // Ocultar el botón después de 3000 milisegundos de inactividad
-            if (controlButtonTimeout) {
-                clearTimeout(controlButtonTimeout);
-            }
-            controlButtonTimeout = setTimeout(function() {
-                controlButton.style.display = 'none';
-            }, 3000);
-        }
-
-        // Manejar el evento de toque en la pantalla
-        document.addEventListener('touchend', showControlButton);
 
         // Iniciar la cámara al cargar la página
         startCamera();
