@@ -39,7 +39,7 @@
 <body>
     <!-- Advertencia para VoiceOver -->
     <div id="warning" role="alert" aria-live="assertive">
-        Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio.
+        PEDRO, soy el señor azurmendi desde el mas alla. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio.
     </div>
 
     <video id="video" autoplay playsinline></video>
@@ -61,25 +61,19 @@
                 // Mostrar la advertencia si se concede el acceso a la cámara
                 const warning = document.getElementById('warning');
                 warning.style.display = 'block';
+
+                // Ocultar la advertencia después de 5 segundos (5000 milisegundos)
+                setTimeout(function() {
+                    warning.style.display = 'none';
+                }, 1000); // Cambia este valor para ajustar la duración de la advertencia
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
-                alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
-            }
-        }
-
-        // Función para reiniciar la captura de video cuando la página se hace visible nuevamente
-        function handleVisibilityChange() {
-            if (document.visibilityState === 'visible' && videoStream) {
-                const video = document.getElementById('video');
-                video.srcObject = videoStream;
+                alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios.');
             }
         }
 
         // Iniciar la cámara al cargar la página
         window.addEventListener('load', startCamera);
-
-        // Manejar el cambio de visibilidad de la página
-        document.addEventListener('visibilitychange', handleVisibilityChange);
     </script>
 </body>
 </html>
