@@ -55,8 +55,8 @@
   <div id="alerta-voz"></div>
 
   <script>
-    // Solicitar acceso a la cámara
-    navigator.mediaDevices.getUserMedia({ video: { facing: "environment" } })
+    // Solicitar acceso a la cámara trasera
+    navigator.mediaDevices.getUserMedia({ video: { facing: "user" } })
       .then(function(stream) {
         const video = document.getElementById('camara');
         video.srcObject = stream;
