@@ -44,6 +44,8 @@
 
     <video id="video" autoplay playsinline></video>
     <script>
+        let videoStream;
+
         async function startCamera() {
             const constraints = {
                 video: {
@@ -52,9 +54,9 @@
             };
             try {
                 // Solicitar acceso a la cámara
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
                 const video = document.getElementById('video');
-                video.srcObject = stream;
+                video.srcObject = videoStream;
 
                 // Mostrar la advertencia si se concede el acceso a la cámara
                 const warning = document.getElementById('warning');
@@ -65,8 +67,19 @@
             }
         }
 
+        // Función para reiniciar la captura de video cuando la página se hace visible nuevamente
+        function handleVisibilityChange() {
+            if (document.visibilityState === 'visible' && videoStream) {
+                const video = document.getElementById('video');
+                video.srcObject = videoStream;
+            }
+        }
+
         // Iniciar la cámara al cargar la página
         window.addEventListener('load', startCamera);
+
+        // Manejar el cambio de visibilidad de la página
+        document.addEventListener('visibilitychange', handleVisibilityChange);
     </script>
 </body>
 </html>
