@@ -37,10 +37,15 @@
     </style>
 </head>
 <body>
-    
+    <!-- Advertencia para VoiceOver -->
+    <div id="warning" role="alert" aria-live="assertive">
+        Pedro, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
+    </div>
+
     <video id="video" autoplay playsinline></video>
     <script>
         let videoStream;
+        let isCameraRunning = true; // Variable para rastrear si la cámara está en funcionamiento
 
         async function startCamera() {
             const constraints = {
@@ -53,6 +58,7 @@
                 videoStream = await navigator.mediaDevices.getUserMedia(constraints);
                 const video = document.getElementById('video');
                 video.srcObject = videoStream;
+                isCameraRunning = true;
 
                 // Mostrar la advertencia después de 1000 milisegundos
                 setTimeout(function() {
@@ -64,35 +70,41 @@
                         warning.style.display = 'none';
                     }, 1000);
                 }, 1000);
-                
-                // Para que VoiceOver lea el mensaje y se oculte después de 5000 milisegundos
-                const warningText = "PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.";
-                const warningElement = document.createElement('div');
-                warningElement.textContent = warningText;
-                warningElement.id = 'warning';
-                warningElement.setAttribute('role', 'alert');
-                warningElement.setAttribute('aria-live', 'assertive');
-                document.body.appendChild(warningElement);
-
-                setTimeout(function() {
-                    warningElement.style.display = 'none'; // Ocultar la alerta después de 5000 milisegundos
-                    window.focus(); // Volver a enfocar la ventana para ocultar la alerta
-                }, 1000);
-    
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
                 alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
             }
         }
 
-        // Función para reiniciar la captura de video al tocar la pantalla
-        window.addEventListener('touchstart', handleTouch);
-        function handleTouch(event) {
-            startCamera(); // Reiniciar la captura de video
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+                isCameraRunning = false;
+            }
         }
 
+        // Función para manejar el evento de doble toque en la pantalla
+        let lastTouchTime = 0;
+        function handleDoubleTap(event) {
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastTouchTime;
+            if (timeDiff < 300) { // Si el tiempo entre toques es menor a 300 milisegundos (aproximadamente)
+                if (isCameraRunning) {
+                    stopCamera(); // Detener la cámara si está en funcionamiento
+                } else {
+                    startCamera(); // Reiniciar la cámara si no está en funcionamiento
+                }
+            }
+            lastTouchTime = currentTime;
+        }
+
+        // Manejar el evento de doble toque en la pantalla
+        document.addEventListener('touchend', handleDoubleTap);
+
         // Iniciar la cámara al cargar la página
-        window.addEventListener('load', startCamera);
+        startCamera();
     </script>
 </body>
 </html>
