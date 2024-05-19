@@ -39,7 +39,7 @@
 <body>
     <!-- Advertencia para VoiceOver -->
     <div id="warning" role="alert" aria-live="assertive">
-        PEDRO, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
+        PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
     </div>
 
     <video id="video" autoplay playsinline></video>
@@ -69,24 +69,31 @@
                     }, 1000);
                 }, 1000);
 
+                // Para que VoiceOver lea el mensaje y se oculte después de 5000 milisegundos
+                const warningText = "PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.";
+                alert(warningText);
+                setTimeout(function() {
+                    window.focus(); // Volver a enfocar la ventana para ocultar la alerta
+                }, 5000);
+            } catch (error) {
+                console.error('Error al acceder a la cámara: ', error);
+                alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
+            }
         }
 
-        // Función para reiniciar la captura de video al hacer doble toque en la pantalla
-        let lastTouchTime = 0;
-        function handleDoubleTap(event) {
-            const currentTime = new Date().getTime();
-            const timeDiff = currentTime - lastTouchTime;
-            if (timeDiff < 300) { // Si el tiempo entre toques es menor a 300 milisegundos (aproximadamente)
+        // Función para reiniciar la captura de video al agitar el teléfono
+        window.addEventListener('devicemotion', handleShake);
+        function handleShake(event) {
+            const acceleration = event.accelerationIncludingGravity;
+            const threshold = 15; // Umbral de agitación, ajustable según la sensibilidad deseada
+            const isShake = Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold || Math.abs(acceleration.z) > threshold;
+            if (isShake) {
                 startCamera(); // Reiniciar la captura de video
             }
-            lastTouchTime = currentTime;
         }
 
         // Iniciar la cámara al cargar la página
         window.addEventListener('load', startCamera);
-
-        // Manejar el evento de doble toque en la pantalla
-        document.addEventListener('touchend', handleDoubleTap);
     </script>
 </body>
 </html>
