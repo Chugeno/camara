@@ -56,7 +56,7 @@
 
   <script>
     // Solicitar acceso a la cámara trasera
-    navigator.mediaDevices.getUserMedia({ video: { facing: "user" } })
+    navigator.mediaDevices.getUserMedia({ video: { facing: "enviroment" } })
       .then(function(stream) {
         const video = document.getElementById('camara');
         video.srcObject = stream;
