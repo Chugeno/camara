@@ -34,6 +34,20 @@
             z-index: 1000;
             display: none; /* Ocultar inicialmente */
         }
+        #controlButton {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 1000;
+            display: none; /* Ocultar inicialmente */
+        }
     </style>
 </head>
 <body>
@@ -43,9 +57,11 @@
     </div>
 
     <video id="video" autoplay playsinline></video>
+    <button id="controlButton" onclick="toggleCamera()">Pausar</button>
     <script>
         let videoStream;
         let isCameraRunning = true; // Variable para rastrear si la cámara está en funcionamiento
+        let controlButtonTimeout;
 
         async function startCamera() {
             const constraints = {
@@ -59,8 +75,9 @@
                 const video = document.getElementById('video');
                 video.srcObject = videoStream;
                 isCameraRunning = true;
+                updateControlButton();
 
-                // Mostrar la advertencia después de 1000 milisegundos
+                // Mostrar la advertencia después de 2000 milisegundos
                 setTimeout(function() {
                     const warning = document.getElementById('warning');
                     warning.style.display = 'block';
@@ -69,7 +86,7 @@
                     setTimeout(function() {
                         warning.style.display = 'none';
                     }, 1000);
-                }, 1000);
+                }, 2000);
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
                 alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
@@ -82,26 +99,38 @@
                     track.stop();
                 });
                 isCameraRunning = false;
+                updateControlButton();
             }
         }
 
-        // Función para manejar el evento de doble toque en la pantalla
-        let lastTouchTime = 0;
-        function handleDoubleTap(event) {
-            const currentTime = new Date().getTime();
-            const timeDiff = currentTime - lastTouchTime;
-            if (timeDiff < 300) { // Si el tiempo entre toques es menor a 300 milisegundos (aproximadamente)
-                if (isCameraRunning) {
-                    stopCamera(); // Detener la cámara si está en funcionamiento
-                } else {
-                    startCamera(); // Reiniciar la cámara si no está en funcionamiento
-                }
+        function toggleCamera() {
+            if (isCameraRunning) {
+                stopCamera();
+            } else {
+                startCamera();
             }
-            lastTouchTime = currentTime;
         }
 
-        // Manejar el evento de doble toque en la pantalla
-        document.addEventListener('touchend', handleDoubleTap);
+        function updateControlButton() {
+            const controlButton = document.getElementById('controlButton');
+            controlButton.textContent = isCameraRunning ? 'Pausar' : 'Reproducir';
+        }
+
+        function showControlButton() {
+            const controlButton = document.getElementById('controlButton');
+            controlButton.style.display = 'block';
+
+            // Ocultar el botón después de 3000 milisegundos de inactividad
+            if (controlButtonTimeout) {
+                clearTimeout(controlButtonTimeout);
+            }
+            controlButtonTimeout = setTimeout(function() {
+                controlButton.style.display = 'none';
+            }, 3000);
+        }
+
+        // Manejar el evento de toque en la pantalla
+        document.addEventListener('touchend', showControlButton);
 
         // Iniciar la cámara al cargar la página
         startCamera();
