@@ -39,7 +39,7 @@
 <body>
     <!-- Advertencia para VoiceOver -->
     <div id="warning" role="alert" aria-live="assertive">
-        PEDRO, soy el señor azurmendi desde el más allá, recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio, gracias.
+        PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.
     </div>
 
     <video id="video" autoplay playsinline></video>
@@ -58,22 +58,42 @@
                 const video = document.getElementById('video');
                 video.srcObject = videoStream;
 
-                // Mostrar la advertencia si se concede el acceso a la cámara
-                const warning = document.getElementById('warning');
-                warning.style.display = 'block';
-
-                // Ocultar la advertencia después de 5 segundos (5000 milisegundos)
+                // Mostrar la advertencia después de 1000 milisegundos
                 setTimeout(function() {
-                    warning.style.display = 'none';
-                }, 5000); // Cambia este valor para ajustar la duración de la advertencia
+                    const warning = document.getElementById('warning');
+                    warning.style.display = 'block';
+
+                    // Ocultar la advertencia después de 1000 milisegundos
+                    setTimeout(function() {
+                        warning.style.display = 'none';
+                    }, 1000);
+                }, 1000);
+
+                // Para que VoiceOver lea el mensaje
+                const warningText = "PEDRO!!!, soy el señor azurmendi desde el más allá. Recuerda colocar el dispositivo en modo avión, apagar el wifi y ponerlo en silencio. Gracias.";
+                alert(warningText);
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
                 alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
             }
         }
 
+        // Función para reiniciar la captura de video al hacer doble toque en la pantalla
+        let lastTouchTime = 0;
+        function handleDoubleTap(event) {
+            const currentTime = new Date().getTime();
+            const timeDiff = currentTime - lastTouchTime;
+            if (timeDiff < 300) { // Si el tiempo entre toques es menor a 300 milisegundos (aproximadamente)
+                startCamera(); // Reiniciar la captura de video
+            }
+            lastTouchTime = currentTime;
+        }
+
         // Iniciar la cámara al cargar la página
         window.addEventListener('load', startCamera);
+
+        // Manejar el evento de doble toque en la pantalla
+        document.addEventListener('touchend', handleDoubleTap);
     </script>
 </body>
 </html>
