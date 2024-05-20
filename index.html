@@ -41,24 +41,17 @@
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 40px;
-            background-color: rgba(0, 0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 24px;
             z-index: 1000;
             display: block; /* Mostrar siempre */
+            opacity: 1;
+            transition: opacity 0.5s;
         }
     </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => console.log('Service Worker registrado con alcance:', registration.scope))
-                    .catch(error => console.error('Error al registrar el Service Worker:', error));
-            });
-        }
-    </script>
 </head>
 <body>
     <!-- Advertencia para VoiceOver -->
@@ -71,6 +64,7 @@
     <script>
         let videoStream;
         let isCameraRunning = true; // Variable para rastrear si la cámara está en funcionamiento
+        let hideControlButtonTimeout; // Variable para el timeout de ocultar el botón
 
         async function startCamera() {
             const constraints = {
@@ -96,6 +90,9 @@
                         warning.style.display = 'none';
                     }, 1000);
                 }, 2000);
+
+                // Configurar ocultar el botón de control después de 3 segundos
+                scheduleHideControlButton();
             } catch (error) {
                 console.error('Error al acceder a la cámara: ', error);
                 alert('No se puede acceder a la cámara. Asegúrate de haber dado los permisos necesarios y de que no haya otra aplicación usando la cámara.');
@@ -125,9 +122,24 @@
             controlButton.textContent = isCameraRunning ? 'Pausar' : 'Reproducir';
         }
 
+        function scheduleHideControlButton() {
+            clearTimeout(hideControlButtonTimeout);
+            hideControlButtonTimeout = setTimeout(() => {
+                document.getElementById('controlButton').style.opacity = 0;
+            }, 3000);
+        }
+
+        function showControlButton() {
+            const controlButton = document.getElementById('controlButton');
+            controlButton.style.opacity = 1;
+            scheduleHideControlButton();
+        }
+
+        // Mostrar el botón al tocar la pantalla
+        document.addEventListener('click', showControlButton);
+
         // Iniciar la cámara al cargar la página
         startCamera();
     </script>
-    <script src="/service-worker.js"></script>
 </body>
 </html>
